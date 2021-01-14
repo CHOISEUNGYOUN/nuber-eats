@@ -1,4 +1,5 @@
 **/.eslintcache
+**/..eslintrc.js
 
 # compiled output
 **/dist
