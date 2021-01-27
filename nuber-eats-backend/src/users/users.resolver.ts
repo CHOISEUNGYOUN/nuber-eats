@@ -1,4 +1,7 @@
+import { UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { AuthUser } from 'src/auth/auth-user.decorator';
+import { AuthGuard } from 'src/auth/auth.guard';
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -9,7 +12,7 @@ import { UserService } from './users.service';
 
 @Resolver(() => User)
 export class UserResolver {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly usersService: UserService) {}
 
   @Query(() => Boolean)
   hi() {
@@ -21,7 +24,7 @@ export class UserResolver {
     @Args('input') createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
     try {
-      return this.userService.createAccount(createAccountInput);
+      return this.usersService.createAccount(createAccountInput);
     } catch (error) {
       return {
         ok: false,
@@ -33,7 +36,7 @@ export class UserResolver {
   @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput) {
     try {
-      return this.userService.login(loginInput);
+      return this.usersService.login(loginInput);
     } catch (error) {
       return {
         ok: false,
@@ -43,5 +46,8 @@ export class UserResolver {
   }
 
   @Query(() => User)
-  me() {}
+  @UseGuards(AuthGuard)
+  me(@AuthUser() authUser: User) {
+    return authUser;
+  }
 }
