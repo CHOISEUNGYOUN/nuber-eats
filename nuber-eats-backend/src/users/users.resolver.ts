@@ -69,7 +69,7 @@ export class UserResolver {
         ok: true,
       };
     } catch (error) {
-      return { ok: false, error: 'User Not Found' };
+      return { ok: false, error: 'User not Found' };
     }
   }
 }
